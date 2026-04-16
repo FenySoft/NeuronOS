@@ -1,0 +1,24 @@
+Neuron OS
+Copyright 2026 FenySoft
+
+This product includes software developed by FenySoft and contributors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+---
+
+Neuron OS is a capability-based actor runtime for secure .NET computing,
+designed for co-development with the Cognitive Fabric Processing Unit (CFPU).
+The CFPU's open-source reference implementation is the CLI-CPU project
+(https://github.com/FenySoft/CLI-CPU).
+
+Related work and inspiration:
+  - Erlang/OTP (Ericsson) — supervision trees, let-it-crash, hot code loading
+  - seL4 (UNSW / NICTA) — capability-based microkernel, formal verification
+  - Singularity (Microsoft Research) — C#-based OS, Software Isolated Processes
+  - QNX — deterministic message-passing microkernel
+  - Akka.NET — actor framework on .NET

@@ -1,0 +1,62 @@
+# .NET build outputs
+bin/
+obj/
+*.user
+*.suo
+*.userprefs
+*.DotSettings.user
+
+# Test results
+TestResults/
+*.trx
+coverage/
+*.coverage
+*.coveragexml
+
+# JetBrains Rider / ReSharper
+.idea/
+_ReSharper.Caches/
+*.sln.iml
+
+# Visual Studio Code
+.vscode/
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Visual Studio
+.vs/
+*.sln.docstates
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+!packages/build/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# Build artifacts
+artifacts/
+publish/
+*.pdb
+*.dll.config
+
+# Logs
+*.log
+logs/
+
+# Environment
+.env
+.env.local
