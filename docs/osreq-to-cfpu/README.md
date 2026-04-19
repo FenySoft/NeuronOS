@@ -24,4 +24,9 @@ The Apple M-series success is rooted in exactly this loop: macOS QoS classes inf
 
 | # | Title | CFPU phase | Status |
 |---|-------|------------|--------|
-| — | (none yet — development just started) | — | — |
+| [OSREQ-001](osreq-001-tree-interconnect-en.md) | Tree-structured interconnect between cores | F4, F5, F6 | Draft |
+| [OSREQ-002](osreq-002-mmio-memory-map-en.md) | MMIO memory map — OS↔HW register interface | F4, F5, F6 | Draft |
+| [OSREQ-003](osreq-003-core-reset-en.md) | Core reset mechanism — supervisor restart | F4, F5, F6 | Draft |
+| [OSREQ-004](osreq-004-dma-engine-en.md) | DMA engine — non-blocking persistence | F5, F6 | Draft |
+| [OSREQ-005](osreq-005-mailbox-interrupt-en.md) | Mailbox interrupt vs polling — core notification | F4, F5, F6 | Draft |
+| [OSREQ-006](osreq-006-interchip-link-en.md) | Inter-chip link protocol — distributed fabric | F6, F7 | Draft |

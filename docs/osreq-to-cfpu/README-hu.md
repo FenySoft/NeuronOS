@@ -24,4 +24,9 @@ Az Apple M-sorozat sikere pontosan erre a hurokra épül: a macOS QoS osztályok
 
 | # | Cím | CFPU fázis | Állapot |
 |---|-----|------------|---------|
-| — | (még nincs — a fejlesztés most indult) | — | — |
+| [OSREQ-001](osreq-001-tree-interconnect-hu.md) | Fa topológiájú interconnect a core-ok között | F4, F5, F6 | Draft |
+| [OSREQ-002](osreq-002-mmio-memory-map-hu.md) | MMIO memória térkép — OS↔HW regiszter interfész | F4, F5, F6 | Draft |
+| [OSREQ-003](osreq-003-core-reset-hu.md) | Core reset mechanizmus — supervisor restart | F4, F5, F6 | Draft |
+| [OSREQ-004](osreq-004-dma-engine-hu.md) | DMA engine — nem-blokkoló persistence | F5, F6 | Draft |
+| [OSREQ-005](osreq-005-mailbox-interrupt-hu.md) | Mailbox interrupt vs polling — core értesítés | F4, F5, F6 | Draft |
+| [OSREQ-006](osreq-006-interchip-link-hu.md) | Inter-chip link protokoll — elosztott fabric | F6, F7 | Draft |
