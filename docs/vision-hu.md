@@ -331,8 +331,8 @@ A router **transparensen** kezeli mind a négyet. A fejlesztő ugyanazt a `send(
 ```csharp
 public struct Message {
     public int  MessageId;       // globálisan unique
-    public int  SenderActorRef;  // ki küldi
-    public int  ReceiverActorRef;// kinek
+    public long SenderActorRef;  // ki küldi (64 bit opaque, lásd actor-ref-scaling-hu.md)
+    public long ReceiverActorRef;// kinek
     public int  MessageKind;     // mi a típusa (struct hash)
     public long Timestamp;       // mikor küldve (determinism)
     public int  PayloadSize;     // payload mérete byte-ban
@@ -385,17 +385,17 @@ ActorRef uartDevice = ...;  // ez egy capability
 uartDevice.Send(new WriteByte(0x41));  // csak azért megy, mert van referenciám
 ```
 
-A kapott `ActorRef` **nem egy szám**, hanem egy strukturált token:
+A kapott `ActorRef` egy **opaque 64 bites token** — a felhasználó számára egyetlen `long` érték, amelynek belső struktúrája csak a runtime számára látszik:
+
 ```csharp
-public struct ActorRef {
-    public int  CoreId;
-    public int  MailboxIndex;
-    public long CapabilityTag;  // HMAC-szerű, a capability_registry által aláírva
-    public int  Permissions;    // read, write, forward, revoke, ...
-}
+public readonly record struct TActorRef(long ActorId);   // 64 bit, opaque, public
+
+// Belső bit-elrendezés (chip-local, csak a runtime értelmezi):
+// [HMAC:24][perms:8][actor-id:8][core-coord:24]
+// Részletek: docs/actor-ref-scaling-hu.md
 ```
 
-A `CapabilityTag`-et a `capability_registry` állítja ki, és a hardveres router **ellenőrzi** minden üzenet küldésnél. Hamisított vagy lejárt capability esetén a router **eldobja** az üzenetet és trap-et generál a küldőnek.
+A HMAC-et a `capability_registry` állítja ki (M2.5), és a **célcore mailbox-edge HW unit** ellenőrzi minden üzenet beérkezésekor — NEM az interconnect router. A HW verify a CFPU "egy mailbox IRQ per core" elvével konzisztens (lásd `CLI-CPU/docs/architecture-hu.md`). Hamisított vagy lejárt capability esetén a HW unit **eldobja** az üzenetet, **fail-stop**-ot trigger-el a küldő core-on, és **AuthCode quarantine**-t indít az aláíró ellen (lásd a védelmi piramist a `actor-ref-scaling-hu.md`-ben).
 
 ### Delegation és revocation
 

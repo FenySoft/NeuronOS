@@ -331,8 +331,8 @@ The router handles all four **transparently**. The developer uses the same `send
 ```csharp
 public struct Message {
     public int  MessageId;       // globally unique
-    public int  SenderActorRef;  // who sends it
-    public int  ReceiverActorRef;// to whom
+    public long SenderActorRef;  // who sends it (64-bit opaque, see actor-ref-scaling-en.md)
+    public long ReceiverActorRef;// to whom
     public int  MessageKind;     // type (struct hash)
     public long Timestamp;       // when sent (determinism)
     public int  PayloadSize;     // payload size in bytes
@@ -385,17 +385,17 @@ ActorRef uartDevice = ...;  // this is a capability
 uartDevice.Send(new WriteByte(0x41));  // works only because I have the reference
 ```
 
-The received `ActorRef` is **not a number** but a structured token:
+The received `ActorRef` is an **opaque 64-bit token** — to the user, a single `long` value whose internal structure is visible only to the runtime:
+
 ```csharp
-public struct ActorRef {
-    public int  CoreId;
-    public int  MailboxIndex;
-    public long CapabilityTag;  // HMAC-like, signed by the capability_registry
-    public int  Permissions;    // read, write, forward, revoke, ...
-}
+public readonly record struct TActorRef(long ActorId);   // 64 bit, opaque, public
+
+// Internal bit layout (chip-local, runtime-only interpretation):
+// [HMAC:24][perms:8][actor-id:8][core-coord:24]
+// Details: docs/actor-ref-scaling-en.md
 ```
 
-The `CapabilityTag` is issued by the `capability_registry`, and the hardware router **verifies** it on every message send. For a forged or expired capability, the router **drops** the message and generates a trap for the sender.
+The HMAC is issued by the `capability_registry` (M2.5), and the **target-core mailbox-edge HW unit** verifies it on every incoming message — NOT the interconnect router. The HW verify is consistent with the CFPU "one mailbox IRQ per core" principle (see `CLI-CPU/docs/architecture-hu.md`). On a forged or expired capability, the HW unit **drops** the message, triggers a **fail-stop** on the sender core, and initiates **AuthCode quarantine** against the signer (see the defense pyramid in `actor-ref-scaling-en.md`).
 
 ### Delegation and revocation
 

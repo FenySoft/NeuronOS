@@ -154,7 +154,7 @@
 | Elem | Leírás |
 |---|---|
 | `TMmioMailbox` | MMIO-alapú HW FIFO mailbox implementáció. |
-| `TActorRef` végleges formátum | `[core-id:16][offset:16][HMAC:24][perms:8]` = 64 bit. |
+| `TActorRef` végleges formátum | `[HMAC:24][perms:8][actor-id:8][core-coord:24]` = 64 bit (chip-local). Bit-azonos a CLI-CPU 16 byte interconnect header alsó 64 bitjével. Részletek: [actor-ref-scaling-hu.md](actor-ref-scaling-hu.md), [osreq-007](osreq-to-cfpu/osreq-007-actor-ref-format-hu.md). |
 | CLI-CPU szinkronizáció | `osreq-to-cfpu` feedback loop a HW repo-val. |
 
 **Becsült óra:** ~30-50
@@ -267,15 +267,16 @@
 | Elem | Leírás |
 |---|---|
 | `TCapabilityRegistry` actor | Capability-k nyilvántartása. |
-| `TActorRef` kibővítés | `[core-id:16][offset:16][HMAC-tag:24][perms:8]` = 64 bit. |
-| Capability kiadás | Spawn-kor a registry aláírja. |
-| Delegálás | Actor továbbadhatja a ref-et üzenetben. |
-| Visszavonás | Az eredeti kiadó érvénytelenítheti. |
-| Permission bitfield | Read, Write, Forward, Revoke. |
+| `TActorRef` ≡ `TCapability` | A ref maga a capability — egyetlen 64 bit token: `[HMAC:24][perms:8][actor-id:8][core-coord:24]`. Bit-azonos a CLI-CPU header alsó 64 bitjével. Részletek: [actor-ref-scaling-hu.md](actor-ref-scaling-hu.md). |
+| Capability kiadás | Spawn-kor a registry SipHash-128 MAC-cel aláírja. |
+| Delegálás | Actor továbbadhatja a ref-et üzenetben (a perms-szel együtt — attenuation lehetséges). |
+| Visszavonás | Per-chip kulcsrotáció (event-driven, hibás-HMAC counter threshold átlépésére). |
+| Permission bit-flag | Send, Stop, Watch, Delegate, Revoke, Query, Snapshot, Migrate. |
+| AuthCode integráció | Spawn-time aláíró-blacklist + bytecode SHA blacklist check. |
 
-**Építő elem:** M0.6 TActorRef kiterjesztésre épül.
+**Építő elem:** M0.6 TActorRef kiterjesztésre épül, és a CFPU AuthCode rendszerre (`CLI-CPU/docs/authcode-hu.md`).
 
-**CFPU:** A HW router ellenőrzi az HMAC-ot minden Send-nél. Hamis/lejárt capability → trap.
+**CFPU:** A célcore mailbox-edge HW unit ellenőrzi az HMAC-ot minden Send-nél (NEM az interconnect router — a "egy mailbox IRQ per core" elv). Hamis HMAC → drop + fail-stop a küldő core-on + AuthCode quarantine az aláíró ellen. Részletek: [osreq-007](osreq-to-cfpu/osreq-007-actor-ref-format-hu.md), [trust-model-hu.md](trust-model-hu.md).
 
 **Becsült óra:** ~28-36
 
@@ -435,11 +436,11 @@
 
 | Elem | Leírás |
 |---|---|
-| `TCapability` struct | `[target:32][HMAC:24][perms:8]` = 64 bit. |
-| HMAC-SHA256 aláírás | capability_registry kulccsal. |
-| Permission bitfield | Send, Spawn, Forward, Revoke, Monitor, Admin. |
-| Runtime ellenőrzés | Minden Send-nél capability check. |
-| Audit trail | Ki, mikor, mit kapott — naplózva. |
+| `TCapability` ≡ `TActorRef` | A capability ÉS a ref ugyanaz a 64 bit token. Layout: `[HMAC:24][perms:8][actor-id:8][core-coord:24]` (lásd [actor-ref-scaling-hu.md](actor-ref-scaling-hu.md)). NEM külön struct. |
+| SipHash-128 MAC | capability_registry per-core kulccsal, MSB-truncate 24 bit. |
+| Permission bit-flag | Send, Stop, Watch, Delegate, Revoke, Query, Snapshot, Migrate. |
+| Runtime ellenőrzés | Célcore mailbox-edge HW unit minden Send-nél (osreq-007). |
+| Audit trail | Hibás HMAC + AuthCode quarantine események naplózva. |
 
 **Becsült óra:** ~28-36
 
