@@ -1,3 +1,20 @@
+> # ⚠️ DEPRECATED — Átnevezve **Symphact**-ra
+>
+> Ez a repo át lett nevezve és áthelyezve: **[FenySoft/Symphact](https://github.com/FenySoft/Symphact)**.
+>
+> A `Neuron OS` projektnevet több létező projekt is használja (AI/data-science Linux disztribúció, Portable Electric energy management OS, NeuralOS kutatás, mások). Az egyedi márkanév érdekében a projekt át lett nevezve **Symphact**-ra — *Symphony + Act*, az aktor-alapú runtime-ra utalva, ahol az aktorok zenekarként hangolódnak össze.
+>
+> **Minden jövőbeli fejlesztés itt folyik: [FenySoft/Symphact](https://github.com/FenySoft/Symphact).** Ez a repo archivált és read-only.
+>
+> A `neuron-os.org` egyedi domain továbbra is működik — már a Symphact repo-ra mutat.
+>
+> Ha klónoztad ezt a repót, frissítsd a remote-ot:
+> ```sh
+> git remote set-url origin git@github.com:FenySoft/Symphact.git
+> ```
+
+---
+
 # Neuron OS
 
 > **Capability-alapú aktor runtime biztonságos .NET számításhoz — co-designed a Cognitive Fabric Processing Unit (CFPU) hardverrel.**

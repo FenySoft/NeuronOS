@@ -1,3 +1,20 @@
+> # ⚠️ DEPRECATED — Renamed to **Symphact**
+>
+> This repository has been renamed and moved to **[FenySoft/Symphact](https://github.com/FenySoft/Symphact)**.
+>
+> The project name `Neuron OS` was contested by multiple existing projects (AI/data-science Linux distribution, Portable Electric energy management OS, NeuralOS research, others). To establish a unique brand identity, the project has been rebranded to **Symphact** — *Symphony + Act*, evoking the actor-based runtime where actors orchestrate like a symphony.
+>
+> **All future development happens at [FenySoft/Symphact](https://github.com/FenySoft/Symphact).** This repository is archived and read-only.
+>
+> Custom domain `neuron-os.org` continues to work — it now points to the Symphact repo.
+>
+> If you cloned this repo, update the remote:
+> ```sh
+> git remote set-url origin git@github.com:FenySoft/Symphact.git
+> ```
+
+---
+
 # Neuron OS
 
 > **Capability-based actor runtime for secure .NET computing — co-designed with the Cognitive Fabric Processing Unit (CFPU).**
